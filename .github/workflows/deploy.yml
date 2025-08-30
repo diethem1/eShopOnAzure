@@ -3,7 +3,7 @@ name: Build and Deploy eShopOnAzure (.NET 8)
 on:
   push:
     branches:
-      - main   
+      - main   # Deploy khi có code mới trên branch main
   workflow_dispatch:   # Cho phép chạy thủ công
 
 jobs:
@@ -21,23 +21,23 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
-      # B3. Restore dependencies (chỉ cho Web project)
+      # B3. Restore dependencies
       - name: Restore dependencies
-        run: dotnet restore src/Web/Web.csproj
+        run: dotnet restore src/WebApp/WebApp.csproj
 
-      # B4. Build Web project
+      # B4. Build project
       - name: Build
-        run: dotnet build src/Web/Web.csproj --configuration Release --no-restore
+        run: dotnet build src/WebApp/WebApp.csproj --configuration Release --no-restore
 
-      # B5. Publish Web project
+      # B5. Publish app
       - name: Publish app
-        run: dotnet publish src/Web/Web.csproj --configuration Release --output ./publish --no-restore
+        run: dotnet publish src/WebApp/WebApp.csproj --configuration Release --output ./publish
 
       # B6. Deploy to Azure Web App
       - name: Deploy to Azure WebApp
         uses: azure/webapps-deploy@v2
         with:
-          app-name: AnHoang   # ⚠️ đổi thành tên App Service bạn đã tạo trong Azure
+          app-name: AnHoang   # ⚠️ Đổi thành tên App Service trong Azure của bạn
           slot-name: production
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
           package: ./publish
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}

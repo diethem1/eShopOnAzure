@@ -19,6 +19,9 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
+      - name: Install .NET Aspire workload
+        run: dotnet workload restore
+
       - name: Restore dependencies
         run: dotnet restore src/eShop.AppHost/eShop.AppHost.csproj
 

@@ -21,23 +21,23 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
-      # B3. Restore dependencies
+      # B3. Restore dependencies (chỉ cho Web project)
       - name: Restore dependencies
-        run: dotnet restore eShop.sln
+        run: dotnet restore src/Web/Web.csproj
 
-      # B4. Build solution
+      # B4. Build Web project
       - name: Build
-        run: dotnet build eShop.sln --configuration Release --no-restore
+        run: dotnet build src/Web/Web.csproj --configuration Release --no-restore
 
-      # B5. Publish app
+      # B5. Publish Web project
       - name: Publish app
-        run: dotnet publish eShop.sln --configuration Release --output ./publish
+        run: dotnet publish src/Web/Web.csproj --configuration Release --output ./publish --no-restore
 
       # B6. Deploy to Azure Web App
       - name: Deploy to Azure WebApp
         uses: azure/webapps-deploy@v2
         with:
-          app-name: AnHoang   # ⚠️ đổi thành tên App Service bạn tạo trong Azure
+          app-name: AnHoang   # ⚠️ đổi thành tên App Service bạn đã tạo trong Azure
           slot-name: production
-          package: ./publish
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: ./publish

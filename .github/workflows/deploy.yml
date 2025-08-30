@@ -3,7 +3,7 @@ name: Build and Deploy eShopOnAzure (.NET 8)
 on:
   push:
     branches:
-      - main   # Deploy khi có code mới trên branch main
+      - main   
   workflow_dispatch:   # Cho phép chạy thủ công
 
 jobs:

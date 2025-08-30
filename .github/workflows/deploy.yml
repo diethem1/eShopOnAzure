@@ -3,41 +3,38 @@ name: Build and Deploy WebApp (.NET 8)
 on:
   push:
     branches:
-      - main   # Deploy khi có code mới trên branch main
-  workflow_dispatch:   # Cho phép chạy thủ công
+      - main
+  workflow_dispatch:
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # B1. Checkout source
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # B2. Setup .NET 8
       - name: Setup .NET 8
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
 
-      # B3. Restore dependencies
       - name: Restore dependencies
-        run: dotnet restore src/WebApp/WebApp.csproj
+        run: dotnet restore src/WebApp/WebApp.csproj  # Sửa nếu đường dẫn khác
 
-      # B4. Build project
       - name: Build
         run: dotnet build src/WebApp/WebApp.csproj --configuration Release --no-restore
 
-      # B5. Publish app
       - name: Publish app
         run: dotnet publish src/WebApp/WebApp.csproj --configuration Release --output ./publish
 
-      # B6. Deploy to Azure Web App
+      - name: Kiểm tra nội dung publish (tùy chọn debug)
+        run: ls -R ./publish
+
       - name: Deploy to Azure WebApp
         uses: azure/webapps-deploy@v2
         with:
-          app-name: anhoang   # ⚠️ Đổi thành tên App Service bạn tạo trong Azure
+          app-name: AnHoang  # Tên App Service
           slot-name: production
           package: ./publish
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}

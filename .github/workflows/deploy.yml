@@ -3,8 +3,8 @@ name: Build and Deploy eShopOnAzure (.NET 8)
 on:
   push:
     branches:
-      - main   # Deploy khi có code mới trên branch main
-  workflow_dispatch:   # Cho phép chạy thủ công
+      - main
+  workflow_dispatch:
 
 jobs:
   build:
@@ -33,11 +33,17 @@ jobs:
       - name: Publish app
         run: dotnet publish src/WebApp/WebApp.csproj --configuration Release --output ./publish
 
-      # B6. Deploy to Azure Web App
+      # B6. Nén publish thành zip
+      - name: Zip published app
+        run: |
+          cd publish
+          zip -r ../publish.zip .
+
+      # B7. Deploy to Azure Web App
       - name: Deploy to Azure WebApp
         uses: azure/webapps-deploy@v2
         with:
-          app-name: AnHoang   # ⚠️ Đổi thành tên App Service trong Azure của bạn
+          app-name: AnHoang   # ⚠️ Đổi thành tên App Service của bạn
           slot-name: production
-          package: ./publish
+          package: ./publish.zip
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
